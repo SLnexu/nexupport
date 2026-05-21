@@ -38,11 +38,11 @@ body{cursor:none}
 #dots{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
 .dot{width:4px;height:4px;border-radius:50%;background:var(--faint);cursor:pointer;transition:all .3s}
 .dot.on{background:var(--green);width:18px;border-radius:2px}
-
+ 
 /* NEXU LINE PATTERN */
 .line-pattern{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.06}
 .line-pattern svg{position:absolute}
-
+ 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -50,7 +50,7 @@ body{cursor:none}
 @keyframes glow{0%,100%{text-shadow:0 0 30px rgba(217,252,177,.3)}50%{text-shadow:0 0 60px rgba(217,252,177,.5),0 0 100px rgba(217,252,177,.2)}}
 @keyframes phaseIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-
+ 
 .a1{opacity:0;animation:fadeUp .6s .05s forwards}
 .a2{opacity:0;animation:fadeUp .6s .2s forwards}
 .a3{opacity:0;animation:fadeUp .6s .35s forwards}
@@ -59,12 +59,12 @@ body{cursor:none}
 .a6{opacity:0;animation:fadeUp .6s .8s forwards}
 .slide:not(.active) .a1,.slide:not(.active) .a2,.slide:not(.active) .a3,
 .slide:not(.active) .a4,.slide:not(.active) .a5,.slide:not(.active) .a6{animation:none;opacity:0}
-
+ 
 /* LOGO X */
 .nexu-x{display:inline-block;font-size:inherit;line-height:1}
 .x-mark{display:inline-block;width:.85em;height:.85em;position:relative;vertical-align:middle;margin-right:.08em}
 .x-mark svg{width:100%;height:100%}
-
+ 
 /* ══ S1 TITLE ══ */
 #s1{align-items:center;text-align:center;justify-content:center;overflow:hidden}
 .s1-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;margin-bottom:40px;font-size:10px;color:var(--green);letter-spacing:3px;font-weight:500}
@@ -81,7 +81,7 @@ body{cursor:none}
 .apc{background:rgba(59,58,202,.2);color:#8887ff;border:1px solid rgba(59,58,202,.35)}
 .apg{background:var(--green-dim);color:var(--green);border:1px solid rgba(217,252,177,.2)}
 .apb{background:rgba(59,58,202,.15);color:#6b9fff;border:1px solid rgba(77,171,247,.25)}
-
+ 
 /* ══ S2 PROBLEM ══ */
 #s2{align-items:center;text-align:center;justify-content:center}
 .s2-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,107,53,.8);margin-bottom:20px;font-weight:500}
@@ -93,7 +93,7 @@ body{cursor:none}
 .s2-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px 28px;min-width:200px;text-align:left}
 .s2-card-n{font-size:48px;font-weight:600;margin-bottom:4px;line-height:1;letter-spacing:-2px}
 .s2-card-l{font-size:10px;color:var(--muted);letter-spacing:1.5px;line-height:1.6;text-transform:uppercase;font-weight:500}
-
+ 
 /* ══ S3 HOW ══ */
 #s3{}
 .s3-layout{display:grid;grid-template-columns:1fr 1fr;gap:52px;width:100%;align-items:start}
@@ -114,14 +114,14 @@ body{cursor:none}
 .aic-desc{font-size:12px;color:var(--muted);line-height:1.6}
 .ai-note{margin-top:12px;background:var(--green-dim);border:1px solid rgba(217,252,177,.12);border-radius:8px;padding:12px 16px;font-size:11px;color:var(--white);line-height:1.75;letter-spacing:.3px}
 .ai-note strong{color:var(--green)}
-
+ 
 /* ══ S4 EVOLUTION — SPLIT ══ */
 #s4{padding-top:32px;justify-content:center}
 .s4-top{width:100%;margin-bottom:16px}
 .s4-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c084fc;margin-bottom:12px;font-weight:500}
 .s4-headline{font-size:clamp(26px,3.2vw,40px);font-weight:600;letter-spacing:-1px}
 .s4-layout{display:grid;grid-template-columns:0.72fr 1.45fr;gap:20px;width:100%}
-
+ 
 /* TODAY */
 .today{background:var(--surface);border:1.5px solid rgba(217,252,177,.3);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;align-self:start}
 .today::after{content:'HOY';position:absolute;top:12px;right:14px;font-size:9px;letter-spacing:3px;color:var(--green);opacity:.4;font-weight:600}
@@ -130,7 +130,7 @@ body{cursor:none}
 .today-items{display:flex;flex-direction:column;gap:7px}
 .ti{display:flex;align-items:flex-start;gap:9px;font-size:11px;color:var(--white);line-height:1.5}
 .ti-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
-
+ 
 /* PHASES */
 .phases{display:flex;flex-direction:column;gap:8px}
 .phase{background:var(--surface2);border-radius:10px;padding:14px 20px;border:1px solid var(--border);cursor:default;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
@@ -143,7 +143,7 @@ body{cursor:none}
 .ph2{border-color:rgba(255,107,53,.15)}.ph2:hover{border-color:rgba(255,107,53,.4)}.ph2 .phase-label{color:#ff6b35}.ph2 .phase-item::before{color:#ff6b35}
 .ph3{border-color:rgba(77,171,247,.12)}.ph3:hover{border-color:rgba(77,171,247,.35)}.ph3 .phase-label{color:#4dabf7}.ph3 .phase-item::before{color:#4dabf7}
 .ph4{border-color:rgba(192,132,252,.12)}.ph4:hover{border-color:rgba(192,132,252,.35)}.ph4 .phase-label{color:#c084fc}.ph4 .phase-item::before{color:#c084fc}
-
+ 
 /* ══ S5 DEMO ══ */
 #s5{}
 .s5-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;width:100%;align-items:center}
@@ -166,7 +166,7 @@ body{cursor:none}
 .ds-icon{font-size:34px}
 .ds-label{font-size:11px;letter-spacing:3px;color:var(--green);font-weight:600}
 .ds-hint{font-size:11px;color:var(--muted);letter-spacing:.5px;text-align:center;line-height:1.9}
-
+ 
 /* ══ S6 CLOSE ══ */
 #s6{align-items:center;text-align:center;justify-content:center;overflow:hidden}
 #s7{align-items:center;text-align:center;justify-content:center;overflow:hidden}
@@ -184,7 +184,7 @@ body{cursor:none}
 <body>
 <div id="cur"></div><div id="ring"></div>
 <div id="deck">
-
+ 
 <!-- S1 TITLE -->
 <div class="slide active" id="s1">
   <!-- NEXU LINE PATTERN BG -->
@@ -206,7 +206,7 @@ body{cursor:none}
   <div class="s1-divider a3"></div>
   <div class="s1-sub a4">De <em>ticket</em> a solución<br>sin humanos en el medio<span class="blink">_</span></div>
 </div>
-
+ 
 <!-- S2 PROBLEM -->
 <div class="slide" id="s2">
   <svg style="position:absolute;right:0;top:0;height:100%;opacity:.04;pointer-events:none" viewBox="0 0 400 900" fill="none">
@@ -218,7 +218,13 @@ body{cursor:none}
   <div class="s2-label a1">El problema</div>
   <div class="s2-big a2">Recursos de desarrollo<br><span class="s2-accent">atrapados en soporte.</span></div>
   <div class="s2-stat a3">
-    <strong>Más de un dev completo al mes.</strong> Solo respondiendo tickets.<br>Especialistas que no reciclan respuestas. Alcance perdido en squads.<br>CX impactado por demoras en solución.
+    <strong>Más de un dev completo al mes.</strong> Solo respondiendo tickets.<br>
+    Especialistas que no reciclan respuestas. Alcance perdido en squads.<br>
+    CX impactado por demoras — y velocidad de negocio frenada.
+  </div>
+  <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(59,58,202,.15);border:1px solid rgba(59,58,202,.3);border-radius:6px;padding:10px 18px;margin-bottom:28px;font-size:12px;color:#8887ff;letter-spacing:.5px" class="a3">
+    <span style="font-size:16px">💡</span>
+    <span>Track 03 · Internal productivity copilots — <strong style="color:var(--white)">impacto directo en velocidad de negocio Nexu</strong></span>
   </div>
   <div class="s2-cards a4">
     <div class="s2-card">
@@ -235,7 +241,7 @@ body{cursor:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- S3 HOW -->
 <div class="slide" id="s3">
   <div class="s3-layout">
@@ -248,12 +254,12 @@ body{cursor:none}
           <div><div class="fv-title" style="color:#ff6b35">Mensaje llega en tiempo real</div><div class="fv-desc">Webhook en Google Chat intercepta el ticket al instante.</div></div>
         </div>
         <div class="fv">
-          <div class="fv-dot" style="background:rgba(59,58,202,.2);border:1.5px solid var(--blue-bright)">⚡</div>
-          <div><div class="fv-title" style="color:#8887ff">Claude interpreta</div><div class="fv-desc">Entiende el problema, extrae contexto e intención del mensaje.</div></div>
+          <div class="fv-dot" style="background:rgba(77,171,247,.15);border:1.5px solid #4dabf7">🔍</div>
+          <div><div class="fv-title" style="color:#4dabf7">GPT calcula por embeddings</div><div class="fv-desc">Compara con casos anteriores y encuentra la solución más cercana o el agente correcto.</div></div>
         </div>
         <div class="fv">
-          <div class="fv-dot" style="background:rgba(77,171,247,.15);border:1.5px solid #4dabf7">🔍</div>
-          <div><div class="fv-title" style="color:#4dabf7">ChatGPT busca por embeddings</div><div class="fv-desc">Compara con casos anteriores y encuentra la solución más cercana o el agente correcto.</div></div>
+          <div class="fv-dot" style="background:rgba(59,58,202,.2);border:1.5px solid var(--blue-bright)">⚡</div>
+          <div><div class="fv-title" style="color:#8887ff">Claude interpreta</div><div class="fv-desc">Entiende el problema, extrae contexto e intención del mensaje.</div></div>
         </div>
         <div class="fv">
           <div class="fv-dot" style="background:var(--green-dim);border:1.5px solid var(--green)">✅</div>
@@ -268,7 +274,7 @@ body{cursor:none}
           <div class="aic-desc">Recibe el mensaje, entiende la incidencia y genera una respuesta clara y accionable.</div>
         </div>
         <div class="aic" style="border-color:rgba(77,171,247,.2)">
-          <div class="aic-top"><div class="aic-logo" style="background:rgba(77,171,247,.15);color:#4dabf7">CHATGPT</div><div class="aic-title">Busca por embeddings</div></div>
+          <div class="aic-top"><div class="aic-logo" style="background:rgba(77,171,247,.15);color:#4dabf7">GPT</div><div class="aic-title">Calcula por embeddings</div></div>
           <div class="aic-desc">Convierte el ticket en vector y lo compara con el historial para encontrar el caso más similar o el agente correcto.</div>
         </div>
         <div class="aic" style="border-color:rgba(217,252,177,.15)">
@@ -281,7 +287,7 @@ body{cursor:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- S4 EVOLUTION -->
 <div class="slide" id="s4">
   <div class="s4-top">
@@ -295,7 +301,7 @@ body{cursor:none}
       <div class="today-items">
         <div class="ti"><div class="ti-dot"></div>Google Chat real con webhook en tiempo real</div>
         <div class="ti"><div class="ti-dot"></div>Claude interpreta el ticket al instante</div>
-        <div class="ti"><div class="ti-dot"></div>ChatGPT encuentra la solución por embeddings</div>
+        <div class="ti"><div class="ti-dot"></div>GPT calcula por embeddings</div>
         <div class="ti"><div class="ti-dot"></div>Respuesta automática en el canal</div>
         <div class="ti"><div class="ti-dot"></div>Escalamiento al owner correcto en Slack si no hay solución</div>
         <div class="ti"><div class="ti-dot"></div>Base de conocimiento construida con Gemini</div>
@@ -340,7 +346,7 @@ body{cursor:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- S5 DEMO -->
 <div class="slide" id="s5">
   <div class="s5-layout">
@@ -369,7 +375,7 @@ body{cursor:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- S6 DASHBOARD -->
 <div class="slide" id="s6" style="padding:40px 52px 70px;overflow:hidden">
   <div style="width:100%;height:100%;display:flex;flex-direction:column;gap:0" class="a1">
@@ -438,7 +444,7 @@ body{cursor:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- S7 CLOSE -->
 <div class="slide" id="s7">
   <!-- Nexu line pattern full screen -->
@@ -465,12 +471,12 @@ body{cursor:none}
     <em>NeXupport</em> resuelve el resto.
   </div>
 </div>
-
+ 
 </div>
 <div id="bar" style="width:16.66%"></div>
 <div id="dots"></div>
 <div id="ctr">01 / 07</div>
-
+ 
 <script>
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 document.addEventListener('mousemove',e=>{
@@ -577,3 +583,4 @@ function renderAll(){
 </script>
 </body>
 </html>
+ 
