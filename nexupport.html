@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeXupport — Nexu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#111110;
+  --surface:#1a1a19;
+  --surface2:#222221;
+  --border:rgba(217,252,177,0.08);
+  --border2:rgba(217,252,177,0.18);
+  --green:#D9FCB1;
+  --green-dim:rgba(217,252,177,0.1);
+  --green-glow:rgba(217,252,177,0.25);
+  --blue:#3B3ACA;
+  --blue-bright:#5554e8;
+  --blue-dim:rgba(59,58,202,0.2);
+  --blue-glow:rgba(59,58,202,0.4);
+  --white:#FBFDFE;
+  --muted:rgba(251,253,254,0.45);
+  --faint:rgba(251,253,254,0.08);
+  --body:'Inter',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:var(--body)}
+body{cursor:none}
+#cur,#ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);border-radius:50%}
+#cur{width:8px;height:8px;background:var(--green)}
+#ring{width:30px;height:30px;border:1px solid var(--green-glow);transition:transform .15s ease}
+#deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:58px 88px 88px;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
+.slide.active{opacity:1;pointer-events:all}
+#bar{position:fixed;top:0;left:0;height:2px;background:var(--green);z-index:100;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px var(--green-glow)}
+#ctr{position:fixed;top:20px;right:32px;font-size:10px;color:var(--muted);z-index:100;letter-spacing:3px;font-weight:500}
+#dots{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--faint);cursor:pointer;transition:all .3s}
+.dot.on{background:var(--green);width:18px;border-radius:2px}
+
+/* NEXU LINE PATTERN */
+.line-pattern{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.06}
+.line-pattern svg{position:absolute}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes glow{0%,100%{text-shadow:0 0 30px rgba(217,252,177,.3)}50%{text-shadow:0 0 60px rgba(217,252,177,.5),0 0 100px rgba(217,252,177,.2)}}
+@keyframes phaseIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+
+.a1{opacity:0;animation:fadeUp .6s .05s forwards}
+.a2{opacity:0;animation:fadeUp .6s .2s forwards}
+.a3{opacity:0;animation:fadeUp .6s .35s forwards}
+.a4{opacity:0;animation:fadeUp .6s .5s forwards}
+.a5{opacity:0;animation:fadeUp .6s .65s forwards}
+.a6{opacity:0;animation:fadeUp .6s .8s forwards}
+.slide:not(.active) .a1,.slide:not(.active) .a2,.slide:not(.active) .a3,
+.slide:not(.active) .a4,.slide:not(.active) .a5,.slide:not(.active) .a6{animation:none;opacity:0}
+
+/* LOGO X */
+.nexu-x{display:inline-block;font-size:inherit;line-height:1}
+.x-mark{display:inline-block;width:.85em;height:.85em;position:relative;vertical-align:middle;margin-right:.08em}
+.x-mark svg{width:100%;height:100%}
+
+/* ══ S1 TITLE ══ */
+#s1{align-items:center;text-align:center;justify-content:center;overflow:hidden}
+.s1-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;margin-bottom:40px;font-size:10px;color:var(--green);letter-spacing:3px;font-weight:500}
+.s1-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
+.s1-main{font-size:clamp(72px,10vw,136px);font-weight:600;line-height:.92;letter-spacing:-4px;margin-bottom:28px}
+.s1-support{color:var(--white)}
+.s1-x{color:var(--green);animation:glow 3s infinite;font-weight:700}
+.s1-divider{width:1px;height:56px;background:linear-gradient(transparent,var(--green),transparent);margin:0 auto 24px;opacity:.4}
+.s1-sub{font-size:13px;color:var(--muted);letter-spacing:2px;line-height:2;font-weight:400}
+.s1-sub em{color:var(--green);font-style:normal}
+.blink{animation:blink 1s infinite;color:var(--green)}
+.ai-stack{display:flex;gap:10px;justify-content:center;margin-top:28px}
+.ai-pill{font-size:10px;padding:5px 14px;border-radius:3px;letter-spacing:1px;font-weight:500}
+.apc{background:rgba(59,58,202,.2);color:#8887ff;border:1px solid rgba(59,58,202,.35)}
+.apg{background:var(--green-dim);color:var(--green);border:1px solid rgba(217,252,177,.2)}
+.apb{background:rgba(59,58,202,.15);color:#6b9fff;border:1px solid rgba(77,171,247,.25)}
+
+/* ══ S2 PROBLEM ══ */
+#s2{align-items:center;text-align:center;justify-content:center}
+.s2-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,107,53,.8);margin-bottom:20px;font-weight:500}
+.s2-big{font-size:clamp(46px,6.5vw,84px);font-weight:600;line-height:1.0;margin-bottom:22px;letter-spacing:-2px}
+.s2-accent{color:#ff6b35;font-style:italic}
+.s2-stat{font-size:13px;color:var(--muted);letter-spacing:1px;margin-bottom:38px;line-height:2;font-weight:400}
+.s2-stat strong{color:var(--white);font-weight:500}
+.s2-cards{display:flex;gap:16px;justify-content:center}
+.s2-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px 28px;min-width:200px;text-align:left}
+.s2-card-n{font-size:48px;font-weight:600;margin-bottom:4px;line-height:1;letter-spacing:-2px}
+.s2-card-l{font-size:10px;color:var(--muted);letter-spacing:1.5px;line-height:1.6;text-transform:uppercase;font-weight:500}
+
+/* ══ S3 HOW ══ */
+#s3{}
+.s3-layout{display:grid;grid-template-columns:1fr 1fr;gap:52px;width:100%;align-items:start}
+.s3-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:18px;font-weight:500}
+.s3-headline{font-size:clamp(28px,3.5vw,44px);font-weight:600;line-height:1.1;margin-bottom:28px;letter-spacing:-1px}
+.s3-headline span{color:var(--green)}
+.flow-vert{display:flex;flex-direction:column;gap:0}
+.fv{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.fv:last-child{border-bottom:none}
+.fv-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px}
+.fv-title{font-size:11px;letter-spacing:1.5px;font-weight:600;margin-bottom:4px;text-transform:uppercase}
+.fv-desc{font-size:12px;color:var(--muted);line-height:1.65}
+.ai-cards{display:flex;flex-direction:column;gap:10px}
+.aic{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.aic-top{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.aic-logo{font-size:9px;padding:3px 10px;border-radius:2px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.aic-title{font-size:11px;color:var(--white);font-weight:500;letter-spacing:.5px}
+.aic-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.ai-note{margin-top:12px;background:var(--green-dim);border:1px solid rgba(217,252,177,.12);border-radius:8px;padding:12px 16px;font-size:11px;color:var(--white);line-height:1.75;letter-spacing:.3px}
+.ai-note strong{color:var(--green)}
+
+/* ══ S4 EVOLUTION — SPLIT ══ */
+#s4{padding-top:32px;justify-content:center}
+.s4-top{width:100%;margin-bottom:16px}
+.s4-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c084fc;margin-bottom:12px;font-weight:500}
+.s4-headline{font-size:clamp(26px,3.2vw,40px);font-weight:600;letter-spacing:-1px}
+.s4-layout{display:grid;grid-template-columns:0.72fr 1.45fr;gap:20px;width:100%}
+
+/* TODAY */
+.today{background:var(--surface);border:1.5px solid rgba(217,252,177,.3);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;align-self:start}
+.today::after{content:'HOY';position:absolute;top:12px;right:14px;font-size:9px;letter-spacing:3px;color:var(--green);opacity:.4;font-weight:600}
+.today-title{font-size:15px;font-weight:600;color:var(--green);margin-bottom:6px;letter-spacing:-.5px}
+.today-focus{font-size:10px;color:rgba(217,252,177,.5);letter-spacing:1px;margin-bottom:12px;line-height:1.6;border-bottom:1px solid var(--border);padding-bottom:10px}
+.today-items{display:flex;flex-direction:column;gap:7px}
+.ti{display:flex;align-items:flex-start;gap:9px;font-size:11px;color:var(--white);line-height:1.5}
+.ti-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
+
+/* PHASES */
+.phases{display:flex;flex-direction:column;gap:8px}
+.phase{background:var(--surface2);border-radius:10px;padding:14px 20px;border:1px solid var(--border);cursor:default;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
+.phase:hover{transform:translateX(4px)}
+.phase-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+.phase-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:8px;letter-spacing:-.3px}
+.phase-items{display:flex;flex-direction:column;gap:4px}
+.phase-item{font-size:11.5px;color:var(--muted);display:flex;gap:7px;line-height:1.45}
+.phase-item::before{content:'›';flex-shrink:0;font-weight:600}
+.ph2{border-color:rgba(255,107,53,.15)}.ph2:hover{border-color:rgba(255,107,53,.4)}.ph2 .phase-label{color:#ff6b35}.ph2 .phase-item::before{color:#ff6b35}
+.ph3{border-color:rgba(77,171,247,.12)}.ph3:hover{border-color:rgba(77,171,247,.35)}.ph3 .phase-label{color:#4dabf7}.ph3 .phase-item::before{color:#4dabf7}
+.ph4{border-color:rgba(192,132,252,.12)}.ph4:hover{border-color:rgba(192,132,252,.35)}.ph4 .phase-label{color:#c084fc}.ph4 .phase-item::before{color:#c084fc}
+
+/* ══ S5 DEMO ══ */
+#s5{}
+.s5-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;width:100%;align-items:center}
+.s5-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;font-weight:500}
+.live-pill{display:inline-flex;align-items:center;gap:7px;background:var(--green-dim);border:1px solid rgba(217,252,177,.22);padding:6px 14px;border-radius:3px;font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:20px;font-weight:500}
+.live-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1s infinite}
+.s5-headline{font-size:clamp(28px,4vw,50px);font-weight:600;line-height:1.05;margin-bottom:14px;letter-spacing:-1.5px}
+.s5-headline span{color:var(--green)}
+.s5-body{font-size:12px;color:var(--muted);line-height:2;margin-bottom:22px;letter-spacing:.5px}
+.s5-cases{display:flex;flex-direction:column;gap:10px}
+.case{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px 16px;display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.case-n{font-size:9px;font-weight:600;flex-shrink:0;margin-top:3px;letter-spacing:1.5px;text-transform:uppercase}
+.demo-screen{background:#0d0d0c;border:1px solid rgba(217,252,177,.12);border-radius:12px;overflow:hidden}
+.ds-bar{background:#161615;padding:10px 16px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.dsdot{width:9px;height:9px;border-radius:50%}
+.ds-title{font-size:11px;color:var(--muted);margin-left:6px;letter-spacing:1px}
+.ds-status{margin-left:auto;font-size:10px;color:var(--green);display:flex;align-items:center;gap:5px;font-weight:500;letter-spacing:1px}
+.ds-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.ds-body{padding:36px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:190px}
+.ds-icon{font-size:34px}
+.ds-label{font-size:11px;letter-spacing:3px;color:var(--green);font-weight:600}
+.ds-hint{font-size:11px;color:var(--muted);letter-spacing:.5px;text-align:center;line-height:1.9}
+
+/* ══ S6 CLOSE ══ */
+#s6{align-items:center;text-align:center;justify-content:center;overflow:hidden}
+#s7{align-items:center;text-align:center;justify-content:center;overflow:hidden}
+.s6-line-pattern{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.s6-badge{font-size:10px;letter-spacing:4px;color:var(--green);margin-bottom:32px;font-weight:500;text-transform:uppercase;background:none;border:none}
+.s6-big{font-size:clamp(44px,7vw,100px);font-weight:600;line-height:.93;letter-spacing:-4px;margin-bottom:28px;max-width:880px}
+.s6-b1{color:var(--white)}
+.s6-b2{color:var(--green);animation:glow 3s infinite}
+.s6-b3{color:var(--muted);font-style:italic;font-size:.58em;letter-spacing:-1px}
+.s6-slogan{font-size:13px;color:var(--muted);letter-spacing:2px;line-height:2.1;max-width:480px;margin-bottom:36px;font-weight:400}
+.s6-slogan em{color:var(--green);font-style:normal}
+.s6-x-watermark{position:absolute;right:-80px;bottom:-80px;opacity:.04;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="ring"></div>
+<div id="deck">
+
+<!-- S1 TITLE -->
+<div class="slide active" id="s1">
+  <!-- NEXU LINE PATTERN BG -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.05;pointer-events:none" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M-100 200 Q200 200 200 500 Q200 800 500 800 Q800 800 800 500 Q800 200 1100 200 Q1400 200 1400 500" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".8"/>
+    <path d="M-100 220 Q200 220 200 520 Q200 820 500 820 Q800 820 800 520 Q800 220 1100 220 Q1400 220 1400 520" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".65"/>
+    <path d="M-100 240 Q200 240 200 540 Q200 840 500 840 Q800 840 800 540 Q800 240 1100 240 Q1400 240 1400 540" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".5"/>
+    <path d="M-100 260 Q200 260 200 560 Q200 860 500 860 Q800 860 800 560 Q800 260 1100 260 Q1400 260 1400 560" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".35"/>
+    <path d="M-100 180 Q200 180 200 480 Q200 780 500 780 Q800 780 800 480 Q800 180 1100 180 Q1400 180 1400 480" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".5"/>
+    <path d="M1600 100 Q1200 100 1200 400 Q1200 700 900 700" stroke="#3B3ACA" stroke-width="2" fill="none" opacity=".7"/>
+    <path d="M1600 120 Q1200 120 1200 420 Q1200 720 900 720" stroke="#3B3ACA" stroke-width="2" fill="none" opacity=".55"/>
+    <path d="M1600 140 Q1200 140 1200 440 Q1200 740 900 740" stroke="#3B3ACA" stroke-width="2" fill="none" opacity=".4"/>
+    <path d="M1600 80 Q1200 80 1200 380 Q1200 680 900 680" stroke="#3B3ACA" stroke-width="2" fill="none" opacity=".55"/>
+  </svg>
+  <div class="s1-badge a1">NEXU HACKATHON · DEMO EN VIVO</div>
+  <div class="s1-main a2">
+    <span class="s1-support">Ne</span><span class="s1-x">X</span><span class="s1-support">upport</span>
+  </div>
+  <div class="s1-divider a3"></div>
+  <div class="s1-sub a4">De <em>ticket</em> a solución<br>sin humanos en el medio<span class="blink">_</span></div>
+</div>
+
+<!-- S2 PROBLEM -->
+<div class="slide" id="s2">
+  <svg style="position:absolute;right:0;top:0;height:100%;opacity:.04;pointer-events:none" viewBox="0 0 400 900" fill="none">
+    <path d="M400 50 Q200 50 200 250 Q200 450 0 450 Q200 450 200 650 Q200 850 400 850" stroke="#D9FCB1" stroke-width="2" fill="none"/>
+    <path d="M400 70 Q220 70 220 270 Q220 470 20 470 Q220 470 220 670 Q220 870 400 870" stroke="#D9FCB1" stroke-width="2" fill="none"/>
+    <path d="M400 90 Q240 90 240 290 Q240 490 40 490 Q240 490 240 690 Q240 890 400 890" stroke="#D9FCB1" stroke-width="2" fill="none"/>
+    <path d="M400 30 Q180 30 180 230 Q180 430 -20 430 Q180 430 180 630 Q180 830 400 830" stroke="#D9FCB1" stroke-width="2" fill="none"/>
+  </svg>
+  <div class="s2-label a1">El problema</div>
+  <div class="s2-big a2">Recursos de desarrollo<br><span class="s2-accent">atrapados en soporte.</span></div>
+  <div class="s2-stat a3">
+    <strong>Más de un dev completo al mes.</strong> Solo respondiendo tickets.<br>Especialistas que no reciclan respuestas. Alcance perdido en squads.<br>CX impactado por demoras en solución.
+  </div>
+  <div class="s2-cards a4">
+    <div class="s2-card">
+      <div class="s2-card-n" style="color:#ff6b35">20+</div>
+      <div class="s2-card-l">Tickets al día<br>7 días a la semana</div>
+    </div>
+    <div class="s2-card">
+      <div class="s2-card-n" style="color:#c084fc">120+</div>
+      <div class="s2-card-l">Horas dev al mes<br>usadas en soporte</div>
+    </div>
+    <div class="s2-card">
+      <div class="s2-card-n" style="color:var(--blue-bright)">↓ CX</div>
+      <div class="s2-card-l">Impactado por<br>demora en solución</div>
+    </div>
+  </div>
+</div>
+
+<!-- S3 HOW -->
+<div class="slide" id="s3">
+  <div class="s3-layout">
+    <div>
+      <div class="s3-label a1">Cómo lo construimos</div>
+      <div class="s3-headline a2">Tres modelos de AI.<br><span>Un solo flujo.</span></div>
+      <div class="flow-vert a3">
+        <div class="fv">
+          <div class="fv-dot" style="background:rgba(255,107,53,.15);border:1.5px solid #ff6b35">📡</div>
+          <div><div class="fv-title" style="color:#ff6b35">Mensaje llega en tiempo real</div><div class="fv-desc">Webhook en Google Chat intercepta el ticket al instante.</div></div>
+        </div>
+        <div class="fv">
+          <div class="fv-dot" style="background:rgba(59,58,202,.2);border:1.5px solid var(--blue-bright)">⚡</div>
+          <div><div class="fv-title" style="color:#8887ff">Claude interpreta</div><div class="fv-desc">Entiende el problema, extrae contexto e intención del mensaje.</div></div>
+        </div>
+        <div class="fv">
+          <div class="fv-dot" style="background:rgba(77,171,247,.15);border:1.5px solid #4dabf7">🔍</div>
+          <div><div class="fv-title" style="color:#4dabf7">ChatGPT busca por embeddings</div><div class="fv-desc">Compara con casos anteriores y encuentra la solución más cercana o el agente correcto.</div></div>
+        </div>
+        <div class="fv">
+          <div class="fv-dot" style="background:var(--green-dim);border:1.5px solid var(--green)">✅</div>
+          <div><div class="fv-title" style="color:var(--green)">Respuesta o escalamiento</div><div class="fv-desc">Claude responde en el canal. Si no hay solución, escala al owner del área correspondiente en Slack.</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ai-cards a4">
+        <div class="aic" style="border-color:rgba(136,135,255,.2)">
+          <div class="aic-top"><div class="aic-logo" style="background:rgba(59,58,202,.2);color:#8887ff">CLAUDE</div><div class="aic-title">Interpreta y responde</div></div>
+          <div class="aic-desc">Recibe el mensaje, entiende la incidencia y genera una respuesta clara y accionable.</div>
+        </div>
+        <div class="aic" style="border-color:rgba(77,171,247,.2)">
+          <div class="aic-top"><div class="aic-logo" style="background:rgba(77,171,247,.15);color:#4dabf7">CHATGPT</div><div class="aic-title">Busca por embeddings</div></div>
+          <div class="aic-desc">Convierte el ticket en vector y lo compara con el historial para encontrar el caso más similar o el agente correcto.</div>
+        </div>
+        <div class="aic" style="border-color:rgba(217,252,177,.15)">
+          <div class="aic-top"><div class="aic-logo" style="background:var(--green-dim);color:var(--green)">GEMINI</div><div class="aic-title">Construyó la base</div></div>
+          <div class="aic-desc">Analizó el historial y estructuró la base de conocimiento. No está en el flujo en vivo.</div>
+        </div>
+      </div>
+      <div class="ai-note a5"><strong>Este HTML fue generado con AI.</strong> Construimos con las mismas herramientas que usamos en el producto.</div>
+      <div class="ai-note a6" style="background:rgba(59,58,202,.12);border-color:rgba(59,58,202,.25);margin-top:10px"><strong style="color:#8887ff">¿Por qué Google Chat?</strong> Es el canal que el equipo ya usa hoy. La decisión fue no cambiar hábitos: NeXupport llega donde el soporte ya ocurre, sin fricción.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 EVOLUTION -->
+<div class="slide" id="s4">
+  <div class="s4-top">
+    <div class="s4-label a1">Alcance</div>
+    <div class="s4-headline a2">Dónde estamos. Hasta dónde <em style="color:var(--green);font-style:normal">podríamos llegar.</em></div>
+  </div>
+  <div class="s4-layout">
+    <div class="today a3">
+      <div class="today-title">Funciona hoy</div>
+      <div class="today-focus">Un problema específico.<br>Un canal específico: Google Chat.</div>
+      <div class="today-items">
+        <div class="ti"><div class="ti-dot"></div>Google Chat real con webhook en tiempo real</div>
+        <div class="ti"><div class="ti-dot"></div>Claude interpreta el ticket al instante</div>
+        <div class="ti"><div class="ti-dot"></div>ChatGPT encuentra la solución por embeddings</div>
+        <div class="ti"><div class="ti-dot"></div>Respuesta automática en el canal</div>
+        <div class="ti"><div class="ti-dot"></div>Escalamiento al owner correcto en Slack si no hay solución</div>
+        <div class="ti"><div class="ti-dot"></div>Base de conocimiento construida con Gemini</div>
+        <div class="ti"><div class="ti-dot"></div>Dashboard semanal con estadísticas y accionables priorizados</div>
+      </div>
+    </div>
+    <div class="phases">
+      <div class="phase ph2 a4">
+        <div class="phase-label">Fase 2</div>
+        <div class="phase-title">Inteligencia y cierre</div>
+        <div class="phase-items">
+          <div class="phase-item">Identificar las 10 principales causas de soporte</div>
+          <div class="phase-item">Respuestas automatizadas para los problemas más frecuentes</div>
+          <div class="phase-item">Seguimiento y cierre real del ticket</div>
+          <div class="phase-item">Cards en Linear desde tickets recurrentes</div>
+          <div class="phase-item">Dashboard semanal con estadísticas y accionables priorizados</div>
+          <div class="phase-item">Skill de revisión de eventos del lead de soporte después de abrir el ticket</div>
+          <div class="phase-item">Historial automático de acciones en el back para definir y cerrar el problema</div>
+          <div class="phase-item">Base de conocimiento que crece sola</div>
+        </div>
+      </div>
+      <div class="phase ph3 a5">
+        <div class="phase-label">Fase 3</div>
+        <div class="phase-title">Agentes que construyen</div>
+        <div class="phase-items">
+          <div class="phase-item">Agentes de desarrollo AI que resuelven tickets técnicos</div>
+          <div class="phase-item">Testing automatizado desde incidencias reales</div>
+          <div class="phase-item">Skill de Linear: crea cards de backlog automaticamente</div>
+          <div class="phase-item">Plan progresivo multicanal: sin cambiar hábitos de soporte actuales</div>
+          <div class="phase-item">Canales incluidos: Team (plataforma Nexu), Slack, Email, WhatsApp</div>
+        </div>
+      </div>
+      <div class="phase ph4 a6">
+        <div class="phase-label">Visión</div>
+        <div class="phase-title">Loop cerrado autónomo</div>
+        <div class="phase-items">
+          <div class="phase-item">Ticket detectado, resuelto y cerrado sin intervención</div>
+          <div class="phase-item">Roadmap generado desde dolores reales del cliente</div>
+          <div class="phase-item">Predicción de problemas antes de que lleguen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5 DEMO -->
+<div class="slide" id="s5">
+  <div class="s5-layout">
+    <div>
+      <div class="live-pill a1">EN VIVO AHORA</div>
+      <div class="s5-headline a2">Esto es<br><span>producción.</span></div>
+      <div class="s5-body a3">Google Chat real.<br>Pipeline completo.<br>2 casos en vivo.</div>
+      <div class="s5-cases a4">
+        <div class="case"><div class="case-n" style="color:var(--green)">Caso 1</div>Error conocido. El sistema responde solo, sin humanos.</div>
+        <div class="case"><div class="case-n" style="color:#ff6b35">Caso 2</div>Sin solución disponible. Escala al owner correspondiente en Slack.</div>
+      </div>
+    </div>
+    <div class="demo-screen a5">
+      <div class="ds-bar">
+        <div class="dsdot" style="background:#ff5f57"></div>
+        <div class="dsdot" style="background:#febc2e;margin-left:4px"></div>
+        <div class="dsdot" style="background:#28c840;margin-left:4px"></div>
+        <span class="ds-title">#soporte-tech · Google Chat</span>
+        <span class="ds-status">live</span>
+      </div>
+      <div class="ds-body">
+        <div class="ds-icon">📺</div>
+        <div class="ds-label">DEMO EN VIVO</div>
+        <div class="ds-hint">Compartir pantalla<br>Google Chat · pipeline completo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6 DASHBOARD -->
+<div class="slide" id="s6" style="padding:40px 52px 70px;overflow:hidden">
+  <div style="width:100%;height:100%;display:flex;flex-direction:column;gap:0" class="a1">
+    <!-- TOP BAR -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:12px;font-weight:600;color:var(--green);letter-spacing:.08em;display:flex;align-items:center;gap:6px">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2L8 8L2 14" stroke="#D9FCB1" stroke-width="2" stroke-linecap="round"/><path d="M8 2L14 8L8 14" stroke="#3B3ACA" stroke-width="2" stroke-linecap="round"/></svg>
+          NeXupport <span style="opacity:.5;font-weight:400">/ seguimiento semanal</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:9px;color:rgba(217,252,177,.45);letter-spacing:.06em">Fecha</span>
+          <select id="fDate" onchange="applyFilters()" style="background:#222;border:.5px solid rgba(217,252,177,.25);color:rgba(217,252,177,.7);font-size:9px;font-family:inherit;height:16px;padding:0 14px 0 4px;border-radius:2px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,%3Csvg width=\'5\' height=\'3\' viewBox=\'0 0 5 3\' fill=\'none\'%3E%3Cpath d=\'M0.5 0.5L2.5 2.5L4.5 0.5\' stroke=\'%23D9FCB1\' stroke-opacity=\'.4\' stroke-width=\'0.8\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 3px center;width:72px">
+            <option value="all">Todas</option><option value="0">Sem 1</option><option value="1">Sem 2</option><option value="2">Sem 3</option><option value="3" selected>Sem 4</option>
+          </select>
+          <span style="width:.5px;height:10px;background:rgba(217,252,177,.25);display:inline-block"></span>
+          <span style="font-size:9px;color:rgba(217,252,177,.45);letter-spacing:.06em">Categoría</span>
+          <select id="fCat" onchange="applyFilters()" style="background:#222;border:.5px solid rgba(217,252,177,.25);color:rgba(217,252,177,.7);font-size:9px;font-family:inherit;height:16px;padding:0 14px 0 4px;border-radius:2px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,%3Csvg width=\'5\' height=\'3\' viewBox=\'0 0 5 3\' fill=\'none\'%3E%3Cpath d=\'M0.5 0.5L2.5 2.5L4.5 0.5\' stroke=\'%23D9FCB1\' stroke-opacity=\'.4\' stroke-width=\'0.8\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 3px center;width:80px">
+            <option value="all">Todas</option><option value="validacion">Validación</option><option value="onboarding">Onboarding</option><option value="comisiones">Comisiones</option><option value="asesores">Asesores</option><option value="estatus">Estatus</option>
+          </select>
+          <span style="width:.5px;height:10px;background:rgba(217,252,177,.25);display:inline-block"></span>
+          <span style="font-size:9px;color:rgba(217,252,177,.45);letter-spacing:.06em">Estado</span>
+          <select id="fStatus" onchange="applyFilters()" style="background:#222;border:.5px solid rgba(217,252,177,.25);color:rgba(217,252,177,.7);font-size:9px;font-family:inherit;height:16px;padding:0 14px 0 4px;border-radius:2px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,%3Csvg width=\'5\' height=\'3\' viewBox=\'0 0 5 3\' fill=\'none\'%3E%3Cpath d=\'M0.5 0.5L2.5 2.5L4.5 0.5\' stroke=\'%23D9FCB1\' stroke-opacity=\'.4\' stroke-width=\'0.8\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 3px center;width:72px">
+            <option value="all">Todos</option><option value="res">Resuelto</option><option value="proc">En proceso</option><option value="pend">Pendiente</option>
+          </select>
+          <button onclick="resetFilters()" style="font-size:9px;color:rgba(217,252,177,.35);background:transparent;border:none;cursor:pointer;font-family:inherit;padding:0">✕ limpiar</button>
+        </div>
+      </div>
+    </div>
+    <!-- KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:9px">
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid var(--border)"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Total tickets</div><div id="kTotal" style="font-size:26px;font-weight:600;line-height:1;color:var(--white)">248</div><div id="kDelta" style="font-size:9px;margin-top:3px;color:#E24B4A">↑ +12 sem. ant.</div></div>
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid var(--border)"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Resueltos</div><div id="kRes" style="font-size:26px;font-weight:600;line-height:1;color:var(--green)">161</div><div id="kResPct" style="font-size:9px;margin-top:3px;color:var(--muted)">65% del total</div></div>
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid var(--border)"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">En proceso</div><div id="kProc" style="font-size:26px;font-weight:600;line-height:1;color:#EF9F27">54</div><div id="kProcPct" style="font-size:9px;margin-top:3px;color:var(--muted)">22% del total</div></div>
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid var(--border)"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Pendientes</div><div id="kPend" style="font-size:26px;font-weight:600;line-height:1;color:#E24B4A">33</div><div id="kPendPct" style="font-size:9px;margin-top:3px;color:var(--muted)">13% del total</div></div>
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid rgba(217,252,177,.3)"><div style="font-size:9px;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Automatización</div><div id="aPct" style="font-size:26px;font-weight:600;line-height:1;color:var(--green)">42%</div><div id="aCounts" style="font-size:9px;margin-top:3px;color:var(--muted)">104 auto · 144 manual</div></div>
+      <div style="background:var(--surface);border-radius:7px;padding:9px 11px;border:.5px solid rgba(59,58,202,.4)"><div style="font-size:9px;color:#8887e8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Ahorro dev</div><div id="kHours" style="font-size:26px;font-weight:600;line-height:1;color:#8887e8">26h</div><div id="kHoursSub" style="font-size:9px;margin-top:3px;color:var(--muted)">esta semana</div></div>
+    </div>
+    <!-- CHARTS ROW -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:var(--surface);border-radius:7px;border:.5px solid var(--border);padding:11px 13px">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Tendencia semanal por categoría</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#D9FCB1;display:inline-block"></span>Validación</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#3B3ACA;display:inline-block"></span>Onboarding</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#EF9F27;display:inline-block"></span>Comisiones</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#E24B4A;display:inline-block"></span>Asesores</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:2px;border-bottom:2px dashed #9FE1CB;display:inline-block;margin-bottom:2px"></span>Estatus</span>
+        </div>
+        <div style="position:relative;width:100%;height:118px"><canvas id="trendC"></canvas></div>
+      </div>
+      <div style="background:var(--surface);border-radius:7px;border:.5px solid var(--border);padding:11px 13px">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Estado por categoría</div>
+        <div id="statusList"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:7px">
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#D9FCB1;display:inline-block"></span>Resuelto</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#EF9F27;display:inline-block"></span>En proceso</span>
+          <span style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:50%;background:#E24B4A;display:inline-block"></span>Pendiente</span>
+        </div>
+      </div>
+    </div>
+    <!-- RANKING -->
+    <div>
+      <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px">Ranking de prioridades — por volumen</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px" id="rankGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- S7 CLOSE -->
+<div class="slide" id="s7">
+  <!-- Nexu line pattern full screen -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.06;pointer-events:none" viewBox="0 0 1440 900" fill="none">
+    <path d="M0 150 Q360 150 360 450 Q360 750 720 750 Q1080 750 1080 450 Q1080 150 1440 150" stroke="#D9FCB1" stroke-width="2" fill="none"/>
+    <path d="M0 170 Q360 170 360 470 Q360 770 720 770 Q1080 770 1080 470 Q1080 170 1440 170" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".8"/>
+    <path d="M0 190 Q360 190 360 490 Q360 790 720 790 Q1080 790 1080 490 Q1080 190 1440 190" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".6"/>
+    <path d="M0 210 Q360 210 360 510 Q360 810 720 810 Q1080 810 1080 510 Q1080 210 1440 210" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".4"/>
+    <path d="M0 130 Q360 130 360 430 Q360 730 720 730 Q1080 730 1080 430 Q1080 130 1440 130" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".6"/>
+    <path d="M0 110 Q360 110 360 410 Q360 710 720 710 Q1080 710 1080 410 Q1080 110 1440 110" stroke="#D9FCB1" stroke-width="2" fill="none" opacity=".4"/>
+  </svg>
+  <!-- X watermark -->
+  <svg style="position:absolute;right:-60px;bottom:-60px;width:400px;height:400px;opacity:.04;pointer-events:none" viewBox="0 0 100 100" fill="none">
+    <path d="M10 10 L45 45 L10 90 L30 90 L50 60 L70 90 L90 90 L55 45 L90 10 L70 10 L50 35 L30 10 Z" fill="#D9FCB1"/>
+  </svg>
+  <div class="s6-badge a1">NeXupport · Nexu · Hackathon 2025</div>
+  <div class="s6-big a2">
+    <div class="s6-b1">Cero tiempo</div>
+    <div class="s6-b2">de tecnología</div>
+    <div class="s6-b3">perdido en soporte.</div>
+  </div>
+  <div class="s6-slogan a3">
+    Tu equipo construye producto.<br>
+    <em>NeXupport</em> resuelve el resto.
+  </div>
+</div>
+
+</div>
+<div id="bar" style="width:16.66%"></div>
+<div id="dots"></div>
+<div id="ctr">01 / 07</div>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'},55);
+});
+const slides=Array.from(document.querySelectorAll('.slide'));
+const N=slides.length;let c=0;
+function goTo(n){
+  slides[c].classList.remove('active');c=Math.max(0,Math.min(n,N-1));
+  slides[c].classList.add('active');
+  slides[c].querySelectorAll('.a1,.a2,.a3,.a4,.a5,.a6').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation='';});
+  document.getElementById('bar').style.width=((c+1)/N*100)+'%';
+  document.getElementById('ctr').textContent=String(c+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===c));
+  if(c===5){setTimeout(()=>{if(typeof renderAll==='function')renderAll();},50);}
+}
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();if(c<N-1)goTo(c+1);}
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();if(c>0)goTo(c-1);}
+});
+document.getElementById('deck').addEventListener('click',e=>{
+  const tag=e.target.tagName.toLowerCase();
+  const interactive=e.target.closest('select,button,input,a,label');
+  if(interactive)return;
+  if(c<N-1)goTo(c+1);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{const dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>40){dx>0&&c<N-1?goTo(c+1):dx<0&&c>0&&goTo(c-1);}});
+const dc=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' on':'');d.onclick=e=>{e.stopPropagation();goTo(i);};dc.appendChild(d);});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const cats=[{key:'validacion',short:'Validación docs'},{key:'onboarding',short:'Link onboarding'},{key:'comisiones',short:'Comisiones'},{key:'asesores',short:'Mod. asesores'},{key:'estatus',short:'Estatus análisis'}];
+const tC=['#D9FCB1','#3B3ACA','#EF9F27','#E24B4A','#9FE1CB'];
+const rC=['#E24B4A','#E24B4A','#EF9F27','#EF9F27','#5DCAA5'];
+const rB=['rgba(226,75,74,.18)','rgba(226,75,74,.12)','rgba(239,159,39,.18)','rgba(239,159,39,.12)','rgba(93,202,165,.18)'];
+const sL=['Crítico','Alto','Medio','Medio','Bajo'];
+const W=[
+  {total:213,res:130,proc:52,pend:31,auto:78,manual:135,autoPct:37,hrs:19,v:{validacion:[55,22,12,9],onboarding:[38,15,8,7],comisiones:[30,12,6,4],asesores:[28,11,5,4],estatus:[20,8,4,3]}},
+  {total:229,res:145,proc:50,pend:34,auto:88,manual:141,autoPct:38,hrs:22,v:{validacion:[60,24,13,10],onboarding:[40,16,9,8],comisiones:[32,13,7,5],asesores:[30,12,6,5],estatus:[22,9,5,3]}},
+  {total:237,res:151,proc:53,pend:33,auto:94,manual:143,autoPct:40,hrs:24,v:{validacion:[63,25,14,10],onboarding:[42,17,10,8],comisiones:[33,14,7,5],asesores:[31,13,6,5],estatus:[23,9,5,4]}},
+  {total:248,res:161,proc:54,pend:33,auto:104,manual:144,autoPct:42,hrs:26,v:{validacion:[68,27,15,11],onboarding:[44,18,10,9],comisiones:[34,14,8,5],asesores:[32,13,7,5],estatus:[24,10,5,4]}}
+];
+let cw=3,tc=null;
+const tot=a=>a.reduce((s,v)=>s+v,0);
+function applyFilters(){
+  const fd=document.getElementById('fDate').value;
+  cw=fd==='all'?3:parseInt(fd);
+  renderAll();
+}
+function resetFilters(){
+  document.getElementById('fDate').value='3';document.getElementById('fCat').value='all';document.getElementById('fStatus').value='all';
+  cw=3;renderAll();
+}
+function renderAll(){
+  const fd=document.getElementById('fDate').value,fc=document.getElementById('fCat').value,fs=document.getElementById('fStatus').value;
+  const weeks=fd==='all'?W:[W[parseInt(fd)]];
+  const vc=fc==='all'?cats:cats.filter(c=>c.key===fc);
+  const w=W[cw],prev=cw>0?W[cw-1]:null;
+  let ag={};vc.forEach(c=>{ag[c.key]=[0,0,0,0];});
+  weeks.forEach(wk=>{vc.forEach(c=>{wk.v[c.key].forEach((v,i)=>{ag[c.key][i]+=v;});});});
+  let ar=0,ap=0,ape=0;
+  vc.forEach(c=>{ar+=ag[c.key][0];ap+=ag[c.key][1];ape+=ag[c.key][2];});
+  let dr=ar,dp=ap,dpe=ape;
+  if(fs==='res'){dp=0;dpe=0;}else if(fs==='proc'){dr=0;dpe=0;}else if(fs==='pend'){dr=0;dp=0;}
+  const dt=dr+dp+dpe;
+  document.getElementById('kTotal').textContent=dt;
+  document.getElementById('kRes').textContent=dr;
+  document.getElementById('kProc').textContent=dp;
+  document.getElementById('kPend').textContent=dpe;
+  document.getElementById('kResPct').textContent=dt>0?Math.round(dr/dt*100)+'% del total':'--';
+  document.getElementById('kProcPct').textContent=dt>0?Math.round(dp/dt*100)+'% del total':'--';
+  document.getElementById('kPendPct').textContent=dt>0?Math.round(dpe/dt*100)+'% del total':'--';
+  const delta=prev&&fd!=='all'?w.total-prev.total:0;
+  const de=document.getElementById('kDelta');
+  if(fd==='all'){de.textContent='Acumulado 4 sem.';de.style.color='var(--muted)';}
+  else{de.textContent=delta>=0?'↑ +'+delta+' sem. ant.':'↓ '+delta+' sem. ant.';de.style.color=delta>=0?'#E24B4A':'#D9FCB1';}
+  document.getElementById('aPct').textContent=w.autoPct+'%';
+  document.getElementById('aCounts').textContent=w.auto+' auto · '+w.manual+' manual';
+  const totalHrs=fd==='all'?W.reduce((s,wk)=>s+wk.hrs,0):w.hrs;
+  document.getElementById('kHours').textContent=totalHrs+'h';
+  document.getElementById('kHoursSub').textContent=fd==='all'?'acumulado 4 sem.':'esta semana';
+  document.getElementById('statusList').innerHTML=vc.map(c=>{
+    let [r,p,pe]=ag[c.key];
+    if(fs==='res'){p=0;pe=0;}else if(fs==='proc'){r=0;pe=0;}else if(fs==='pend'){r=0;p=0;}
+    const t=r+p+pe;
+    if(!t)return'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="font-size:11px;color:var(--white);width:100px">'+c.short+'</div><div style="font-size:10px;color:var(--muted);flex:1">sin datos</div></div>';
+    return'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="font-size:11px;color:var(--white);width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.short+'</div><div style="flex:1;display:flex;height:7px;border-radius:3px;overflow:hidden;gap:1px"><div style="width:'+Math.round(r/t*100)+'%;background:#D9FCB1"></div><div style="width:'+Math.round(p/t*100)+'%;background:#EF9F27"></div><div style="width:'+Math.round(pe/t*100)+'%;background:#E24B4A"></div></div><div style="font-size:10px;color:var(--muted);min-width:20px;text-align:right">'+t+'</div></div>';
+  }).join('');
+  const sorted=vc.map((c,oi)=>{
+    let [r,p,pe]=ag[c.key];
+    if(fs==='res'){p=0;pe=0;}else if(fs==='proc'){r=0;pe=0;}else if(fs==='pend'){r=0;p=0;}
+    return Object.assign({},c,{total:r+p+pe,oi:oi});
+  }).sort((a,b)=>b.total-a.total);
+  document.getElementById('rankGrid').innerHTML=sorted.map((c,i)=>'<div style="background:var(--surface);border-radius:7px;border:.5px solid '+rB[i]+';padding:9px 11px"><div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><div style="width:17px;height:17px;border-radius:3px;background:'+rB[i]+';color:'+rC[i]+';font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div><div style="font-size:11px;color:var(--white);line-height:1.3;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.short+'</div></div><div style="font-size:9px;font-weight:600;color:'+rC[i]+';margin-bottom:3px">'+sL[i]+'</div><div style="font-size:21px;font-weight:700;line-height:1;color:'+rC[i]+'">'+c.total+'</div><div style="font-size:9px;color:var(--muted);margin-top:1px">tickets</div></div>').join('');
+  const dc=fc==='all'?cats:cats.filter(c=>c.key===fc);
+  if(tc)tc.destroy();
+  tc=new Chart(document.getElementById('trendC'),{type:'line',data:{labels:['S1','S2','S3','S4'],datasets:dc.map(c=>{const idx=cats.indexOf(c);return{label:c.short,data:W.map(wk=>{const a=wk.v[c.key];return fs==='res'?a[0]:fs==='proc'?a[1]:fs==='pend'?a[2]:tot(a);}),borderColor:tC[idx],backgroundColor:'transparent',tension:.35,pointRadius:3,borderDash:idx===4?[4,3]:undefined};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,bodyFont:{size:10},titleFont:{size:10}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'rgba(217,252,177,.4)'},border:{color:'rgba(217,252,177,.1)'}},y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.05)'},ticks:{font:{size:9},color:'rgba(217,252,177,.4)'},border:{color:'transparent'}}}}});
+}
+// init done
+</script>
+</body>
+</html>
